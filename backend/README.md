@@ -21,7 +21,7 @@ A comprehensive restaurant management system built with Node.js, Express.js, Rea
 
 ### Technical Features
 - **RESTful API**: Well-structured API endpoints
-- **Database Integration**: MySQL with XAMPP
+- **Database Integration**: MongoDB with Mongoose
 - **File Upload**: Image upload with multer
 - **PDF Generation**: Automatic bill generation with PDFKit
 - **Authentication**: JWT-based authentication
@@ -34,7 +34,7 @@ A comprehensive restaurant management system built with Node.js, Express.js, Rea
 ### Backend
 - **Node.js**: Runtime environment
 - **Express.js**: Web framework
-- **MySQL**: Database with XAMPP
+- **MongoDB**: Database with Mongoose
 - **JWT**: Authentication
 - **Multer**: File upload handling
 - **PDFKit**: PDF generation
