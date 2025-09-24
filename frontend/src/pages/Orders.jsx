@@ -121,7 +121,7 @@ const Orders = () => {
               <div className="lg:col-span-2">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   {orders.map((order) => (
-                    <div key={order.id} className="p-6 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
+                    <div key={order._id} className="p-6 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors duration-200">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900">
@@ -161,7 +161,7 @@ const Orders = () => {
                             <span>View Details</span>
                           </button>
                           <button
-                            onClick={() => downloadBill(order.id)}
+                            onClick={() => downloadBill(order._id)}
                             className="flex items-center space-x-1 text-gray-600 hover:text-gray-700 font-medium transition-colors duration-200"
                           >
                             <DocumentArrowDownIcon className="w-4 h-4" />

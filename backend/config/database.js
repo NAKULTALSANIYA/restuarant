@@ -1,15 +1,12 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/restaurant_management';
+const mongoURI = process.env.MONGODB_URI
 
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(mongoURI)
     console.log('MongoDB Connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);

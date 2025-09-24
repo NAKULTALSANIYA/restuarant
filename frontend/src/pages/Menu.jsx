@@ -144,7 +144,7 @@ const Menu = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div key={product._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300">
                 {/* Product Image */}
                 <div className="relative">
                   <img
@@ -153,10 +153,10 @@ const Menu = () => {
                     className="w-full h-48 object-cover"
                   />
                   <button
-                    onClick={() => toggleFavorite(product.id)}
+                    onClick={() => toggleFavorite(product._id)}
                     className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors duration-200"
                   >
-                    {favorites.has(product.id) ? (
+                    {favorites.has(product._id) ? (
                       <HeartSolidIcon className="w-5 h-5 text-red-500" />
                     ) : (
                       <HeartIcon className="w-5 h-5 text-gray-400" />
@@ -184,7 +184,7 @@ const Menu = () => {
                       {product.category}
                     </span>
                     <button
-                      onClick={() => handleAddToCart(product.id)}
+                      onClick={() => handleAddToCart(product._id)}
                       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-1"
                     >
                       <PlusIcon className="w-4 h-4" />

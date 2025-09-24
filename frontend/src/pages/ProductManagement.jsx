@@ -81,7 +81,7 @@ const ProductManagement = () => {
 
     try {
       if (editingProduct) {
-        await instance.put(`/api/products/${editingProduct.id}`, submitData, {
+        await instance.put(`/api/products/${editingProduct._id}`, submitData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
@@ -194,7 +194,7 @@ const ProductManagement = () => {
           {/* Products Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div key={product._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Product Image */}
                 <div className="relative">
                   <img
@@ -213,7 +213,7 @@ const ProductManagement = () => {
                       <PencilIcon className="w-4 h-4 text-gray-600" />
                     </button>
                     <button
-                      onClick={() => handleDelete(product.id)}
+                      onClick={() => handleDelete(product._id)}
                       className="p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors duration-200"
                     >
                       <TrashIcon className="w-4 h-4 text-red-600" />

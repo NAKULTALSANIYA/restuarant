@@ -119,7 +119,7 @@ router.get('/:id/bill', async (req, res) => {
     // Order details
     doc.fontSize(12)
        .text(`Order Number: ${order.order_number}`)
-       .text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`)
+       .text(`Date: ${new Date(order.order_date).toLocaleDateString()}`)
        .text(`Customer: ${order.customer_name}`)
        .text(`Email: ${order.customer_email}`)
        .text(`Phone: ${order.customer_phone}`)
@@ -152,8 +152,8 @@ router.get('/:id/bill', async (req, res) => {
     orderItems.forEach(item => {
       doc.text(item.product_name, 50, currentY, { width: 240 })
          .text(item.quantity.toString(), 300, currentY)
-         .text(`$${item.product_price}`, 350, currentY)
-         .text(`$${item.subtotal}`, 450, currentY);
+         .text(`Rs. ${item.product_price}`, 350, currentY)
+         .text(`Rs. ${item.subtotal}`, 450, currentY);
 
       currentY += 20;
     });
@@ -167,7 +167,7 @@ router.get('/:id/bill', async (req, res) => {
     currentY += 10;
     doc.font('Helvetica-Bold')
        .fontSize(12)
-       .text(`Total Amount: $${order.total_amount}`, 350, currentY);
+       .text(`Total Amount: Rs. ${order.total_amount}`, 350, currentY);
 
     // Footer
     doc.moveDown(3)
