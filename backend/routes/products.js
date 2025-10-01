@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
 const Product = require('../models/Product');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -98,7 +99,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new product
-router.post('/', upload.single('image'), validateProduct, async (req, res) => {
+router.post('/',requireAuth, requireAdmin, upload.single('image'), validateProduct, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -129,7 +130,7 @@ router.post('/', upload.single('image'), validateProduct, async (req, res) => {
 });
 
 // Update product
-router.put('/:id', upload.single('image'), validateProduct, async (req, res) => {
+router.put('/:id',requireAuth, requireAdmin, upload.single('image'), validateProduct, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -167,7 +168,7 @@ router.put('/:id', upload.single('image'), validateProduct, async (req, res) => 
 });
 
 // Delete product (soft delete)
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',requireAuth, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
