@@ -4,14 +4,21 @@ const fs = require('fs');
 const path = require('path');
 const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
+const { requireAuth, requireAdmin, requireStaff } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Get all orders
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
   try {
     const { status, page = 1, limit = 10 } = req.query;
-    const query = status ? { status } : {};
+    let query = status ? { status } : {};
+
+    // Filter by user if customer
+    if (req.user.role === 'customer') {
+      query.user_id = req.user.id;
+    }
+
     const skip = (page - 1) * limit;
 
     const orders = await Order.find(query)
@@ -37,13 +44,18 @@ router.get('/', async (req, res) => {
 });
 
 // Get single order with items
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
     const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Check if user owns the order or is admin/staff
+    if (req.user.role === 'customer' && order.user_id.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     const items = await OrderItem.find({ order_id: id });
@@ -59,7 +71,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update order status
-router.put('/:id/status', async (req, res) => {
+router.put('/:id/status', requireStaff, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -83,7 +95,7 @@ router.put('/:id/status', async (req, res) => {
 });
 
 // Generate PDF bill
-router.get('/:id/bill', async (req, res) => {
+router.get('/:id/bill', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -91,6 +103,11 @@ router.get('/:id/bill', async (req, res) => {
     const order = await Order.findById(id);
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Check if user owns the order or is admin/staff
+    if (req.user.role === 'customer' && order.user_id.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     // Get order items
@@ -186,7 +203,7 @@ router.get('/:id/bill', async (req, res) => {
 });
 
 // Get order statistics
-router.get('/stats/summary', async (req, res) => {
+router.get('/stats/summary', requireAdmin, async (req, res) => {
   try {
     const totalOrders = await Order.countDocuments();
 

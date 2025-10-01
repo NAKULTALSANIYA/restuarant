@@ -4,11 +4,12 @@ const CartItem = require('../models/CartItem');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
+const { requireAuth, requireCustomer } = require('../middleware/auth');
 
 const router = express.Router();
 
 // Add item to cart
-router.post('/add', [
+router.post('/add', requireAuth, requireCustomer, [
   body('product_id').isMongoId().withMessage('Product ID must be a valid ID'),
   body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
   body('user_id').isMongoId().withMessage('User ID must be a valid ID')
@@ -20,6 +21,11 @@ router.post('/add', [
     }
 
     const { product_id, quantity, user_id } = req.body;
+
+    // Ensure user can only add to their own cart
+    if (user_id !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
 
     // Check if product exists and is available
     const product = await Product.findOne({ _id: product_id, is_available: true });
@@ -52,9 +58,14 @@ router.post('/add', [
 });
 
 // Get cart items
-router.get('/:user_id', async (req, res) => {
+router.get('/:user_id', requireAuth, requireCustomer, async (req, res) => {
   try {
     const { user_id } = req.params;
+
+    // Ensure user can only access their own cart
+    if (user_id !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
 
     const cartItems = await CartItem.find({ user_id })
       .populate({
@@ -91,7 +102,7 @@ router.get('/:user_id', async (req, res) => {
 });
 
 // Update cart item quantity
-router.put('/update', [
+router.put('/update', requireAuth, requireCustomer, [
   body('cart_item_id').isMongoId().withMessage('Cart item ID must be a valid ID'),
   body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1')
 ], async (req, res) => {
@@ -102,6 +113,12 @@ router.put('/update', [
     }
 
     const { cart_item_id, quantity } = req.body;
+
+    // Check if cart item belongs to the user
+    const cartItem = await CartItem.findById(cart_item_id);
+    if (!cartItem || cartItem.user_id.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
 
     const result = await CartItem.findByIdAndUpdate(cart_item_id, { quantity });
 
@@ -117,9 +134,15 @@ router.put('/update', [
 });
 
 // Remove item from cart
-router.delete('/remove/:cart_item_id', async (req, res) => {
+router.delete('/remove/:cart_item_id', requireAuth, requireCustomer, async (req, res) => {
   try {
     const { cart_item_id } = req.params;
+
+    // Check if cart item belongs to the user
+    const cartItem = await CartItem.findById(cart_item_id);
+    if (!cartItem || cartItem.user_id.toString() !== req.user.userId) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
 
     const result = await CartItem.findByIdAndDelete(cart_item_id);
 
