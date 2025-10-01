@@ -25,14 +25,14 @@ app.use(limiter);
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL | 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true,
   optionsSuccessStatus: 200
 }));
 
 // Explicitly handle OPTIONS preflight requests for all routes
 app.options('*', cors({
-  origin: process.env.FRONTEND_URL | 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true,
   optionsSuccessStatus: 200
 }));
