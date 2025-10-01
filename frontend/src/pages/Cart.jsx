@@ -22,11 +22,11 @@ const Cart = () => {
     customer_phone: ''
   });
 
-  const handleQuantityChange = async (cartItemId, newQuantity) => {
+  const handleQuantityChange = (cartItemId, newQuantity) => {
     if (newQuantity < 1) {
-      await removeFromCart(cartItemId);
+      removeFromCart(cartItemId);
     } else {
-      await updateCartItem(cartItemId, newQuantity);
+      updateCartItem(cartItemId, newQuantity);
     }
   };
 
